@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DotLiquid;
-using FastTrackForAzure.DTO;
+using Reports.DTO;
 
 public class RenderViewModel : Drop
 {

@@ -3,7 +3,7 @@ using DotLiquid;
 using System;
 using System.Linq;
 
-namespace FastTrackForAzure.DTO 
+namespace Reports.DTO 
 {
     public class Bucket {
         public string Id { get; set; } 

@@ -34,7 +34,8 @@ namespace FastTrackForAzure
             try
             {
                 RootDTO DTO = JsonConvert.DeserializeObject<RootDTO>(await req.Content.ReadAsStringAsync());
-                string templatecontent = await new HttpClient().GetStringAsync($"https://ftaautoemea.blob.core.windows.net/htmlcontainer/{TemplateToUse}.html");
+                // Need to add the blobroot setting into the functionapp    
+                string templatecontent = await new HttpClient().GetStringAsync($"{Environment.GetEnvironmentVariable("BlobRoot")}/htmlcontainer/{TemplateToUse}.html");
                 RenderViewModel PopulateProcessing = new RenderViewModel();
                 IEnumerable<Bucket> selectedBuckets = null;
                 PopulateProcessing.HrsFilter = HoursToFilter; 

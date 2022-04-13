@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net;
-using FastTrackForAzure.DTO;
+using Reports.DTO;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using DotLiquid;

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <body>
+        <div style="font-family: Segoe UI Light, Helvetica, sans-serif;background-color:navy; color:white; text-align:center;" width="100%">
+			<h1>
+				FastTrack For Azure - {{data1.ReportTitle}} (Snapshot at {{data1.Now | Date: 'MMMM dd, yyyy HH:mm'}})
+			</h1>
+		</div>
+
+		<div style="font-family: Segoe UI Light, Helvetica, sans-serif;background-color:black; color:white; text-align:left;" width="100%">
+			<table style="font-family: Segoe UI Light, Helvetica, sans-serif;background-color:black; color:white; text-align:left;" width="100%">
+				<tr><td>Pod data</td><td>{{data1.FilteredBy}}</td>
+				<tr><td>Included Buckets</td><td>{{data1.IncludeBuckets}}</td> 
+				<tr><td>Red</td><td>&lt 0h till due</td> 
+				<tr><td>Yellow</td><td>&lt {{data1.HrsYellow}}h till due</td>
+				{% if data1.HrsFilter < 99999 %}<tr><td>Filtering</td><td>any records over {{data1.HrsFilter}}h till due</td>{% endif %}
+				<tr><td>Filtering</td><td>{% if data1.SuppressTakenItems %}Taken items suppressed{% else %}Taken items unsuppressed{% endif %}</td>
+			</table>
+		</div>
+		<div style="font-family: Segoe UI, Helvetica, sans-serif;background-color:white; color:black; text-align:left;" width="100%">
+			<h2 style="font-family: Segoe UI Light, Segoe UI, Helvetica, sans-serif;">Summary of outstanding asks by area</h2>
+			<table style="font-family: Segoe UI Light, Helvetica, sans-serif;background-color:black; color:white; text-align:left;" width="100%">
+				<tr>
+					<td>Bucket and Area</td>
+					<td>Min Hrs To Due</td>
+					<td>Total Open</td>
+					<td>Overdue Open</td>
+				</tr>
+				{% for item in data1.SummaryItemArray -%}
+					<tr>
+						<td>{{item.SummaryBucketArea}}</td>
+						<td>{{item.SummaryOldest}}</td>
+						<td>{{item.SummaryOutstanding}}</td>
+						<td>{{item.SummaryOverdueOutstanding}}</td>
+					</tr>
+				{% endfor -%}	
+			</table>
+		</div>
+		<div style="font-family: Segoe UI, Helvetica, sans-serif;background-color:white; color:black; text-align:left;" width="100%">
+        {% for item in data1.ViewBucketArray -%}
+		<h2 style="font-family: Segoe UI Light, Segoe UI, Helvetica, sans-serif;">Bucket: {{item.Name}} - {{item.ViewBucketTasksArray.size}} entries</h2>
+		<table style="font-family: Segoe UI, Helvetica, sans-serif;border:1px solid black;border-collapse:collapse;" width="100%">
+			<tr style="background-color:black; color:white; text-align:center;">
+				<td width="10%">Project Type</td>
+				<td width="20%">Customer</td>
+				<td width="45%">Description</td>
+				<td width="10%">Due On (Sort #2)</td>
+				<td width="5%">Goes Red In</td>
+				<td width="10%">State (Sort #1)</td>
+			</tr>
+			{% for itemROW in item.ViewBucketTasksArray -%}
+            <tr>
+                <td style="text-align:center;border:1px solid black;">{{itemROW.AskType}} - {{itemROW.Category}}</td>
+                <td style="text-align:center;border:1px solid black"><a href="https://aka.ms/emeaplanner?taskId={{itemROW.Id}}">{{itemROW.Customer}}</a></td>
+                <td style="margin: 0 30vw;border:1px solid black;"> 
+                    {{itemROW.AbbreviatedDescription | StripHtml | NewlineToBr }}             
+                </td>
+				<td style="background-color:{% if itemROW.IsTaken %}Gray{% else %}{% if itemROW.IsOverDue %}Red{% else %}Green{% endif %}{% endif %};color:white;border:1px solid black;text-align:center;">{{itemROW.Colour}} {{itemROW.InternationallyFormattedDueDateTime}}</td>
+                <td style="background-color:{% if itemROW.DueInHours < 0 %}Red{% else %}{% if itemROW.DueInHours < 23 %}Orange{% else %}Green{% endif %}{% endif %};color:white;border:1px solid black;text-align:center;">{{itemROW.Colour}} {{itemROW.DueInHours}} hrs</td>
+                <td style="background-color:{% if itemROW.IsTaken %}Green;color:white;border:1px solid black;text-align:center;">Taken By {{itemROW.IsTakenBy}} </br> ({{itemROW.CreatedBy}} to introduce and complete){% else %}Orange;color:white;border:1px solid black;text-align:center;">Open</br> Creator: {{itemROW.CreatedBy}}{% endif %}</td>
+            </tr>
+            {% endfor -%}
+		</table>
+        {% endfor -%}
+    </body>
+</html>
